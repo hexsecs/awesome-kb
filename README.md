@@ -9,6 +9,8 @@ This repository is the network's **registry**. It is also an
 [OpenShelf](https://github.com/hexsecs/openkb) knowledge base about the
 member KBs, with a machine-readable connection list that agents can sync.
 
+**Browse the rendered site: [hexsecs.github.io/awesome-kb](https://hexsecs.github.io/awesome-kb/)** — the composed, searchable reading view of every registered KB.
+
 ## Registered knowledge bases
 
 A KB is listed here only after its `kb.yaml` has been checked and
