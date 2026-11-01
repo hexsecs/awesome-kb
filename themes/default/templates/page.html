@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ title }}</title>
+<link rel="stylesheet" href="{{ root_rel }}assets/style.css">
+</head>
+<body><header class="site"><div class="wrap">
+<a href="{{ home_href }}">{{ site_title }}</a>
+<nav>{% for item in nav %}<a href="{{ item.href }}">{{ item.label }}</a>{% endfor %}</nav>
+<div class="searchbox"><input id="q" type="search"
+placeholder="Search all composed KBs…" autocomplete="off">
+<ul id="results"></ul></div></div></header>
+<main>
+{% if provenance %}<div class="prov">From <strong>{{ provenance.kb_id }}</strong> @ <code>{{ provenance.commit_short }}</code> — composed at the commit pinned in <code>.openshelf/kbs.lock</code></div>
+{% endif %}
+{% if page_title %}<h1>{{ page_title }}</h1>
+{% endif %}
+{% if card %}<div class="card"><p class="summary">{{ card.summary }}</p>
+<div class="chips">{% for chip in card.chips %}<span class="{{ chip.cls }}">{{ chip.text }}</span>{% endfor %}</div>
+{% if card.resource_url %}<a class="resource" href="{{ card.resource_url }}">Open the resource ↗</a>
+{% endif %}</div>
+{% endif %}
+{{ content | safe }}
+{% if composed %}<h2>Composed knowledge bases</h2>
+{% for kb in composed %}<div class="kbblock"><h3><a href="{{ kb.href }}">{{ kb.title }}</a></h3>
+<p>{{ kb.description }}</p>
+<p>{{ kb.pages }} pages · composed @ {{ kb.commit_short }}</p></div>
+{% endfor %}
+{% endif %}
+{% if related %}<div class="related"><h2>Related</h2><ul>{% for r in related %}<li>{% if r.href %}<a href="{{ r.href }}">{{ r.slug }}</a>{% else %}{{ r.slug }}{% endif %}</li>{% endfor %}</ul></div>
+{% endif %}
+</main>
+<footer>Built from OpenShelf knowledge bases · {{ footer }} ·
+markdown is the source of truth; this site is a rendered view.</footer>
+<script>window.SEARCH_BASE="{{ root_rel }}";</script>
+<script src="{{ root_rel }}search.js"></script>
+</body></html>

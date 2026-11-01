@@ -1,0 +1,8 @@
+body { font-family: Georgia, serif; max-width: 42rem; margin: 2rem auto;
+       padding: 0 1rem; line-height: 1.55; }
+.searchbox { position: relative; }
+#results { position: absolute; background: #fff; border: 1px solid #999;
+           list-style: none; padding: 0; margin: 0; z-index: 20; }
+#results:empty { display: none; }
+#results li { padding: .3rem .5rem; }
+#results .meta, #results .snip { color: #555; font-size: .85rem; }

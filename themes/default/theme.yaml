@@ -1,0 +1,9 @@
+name: default
+version: "1.0"
+author: Awesome KB project
+description: >
+  The reference theme for composed OpenShelf sites: clean single-column
+  reading layout, frontmatter card on entity pages, provenance bar on
+  imported pages, header search across the whole composition.
+templates: templates
+assets: assets

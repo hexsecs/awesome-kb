@@ -7,12 +7,22 @@ site under kb/<kb-id>/, at exactly the locked commit. kb:// links
 resolve to the local composed route when the target KB is imported,
 and fall back to that KB's repository otherwise.
 
+Data and front-end are separate. This script owns the data work —
+loading KBs, pinning imports, converting markdown, resolving links —
+and emits it theme-free: bundle.json (the composition as data),
+fragments/<route>.html (each page's body, links resolved), and a
+full-text search-index.json. A theme (themes/<name>/, selected with
+--theme) supplies all presentation: one Jinja2 template plus assets,
+fed the context documented in themes/README.md. A KB never knows which
+theme renders it, and theme choice never goes in kb.yaml.
+
 Reads:  kb.yaml, the pages dir + index from kb.yaml's layout,
         .openshelf/kbs.yaml / kbs.lock, .openshelf/cache/<kb-id>/
-        (cloned and checked out at the pin when missing).
+        (cloned and checked out at the pin when missing),
+        themes/<name>/ (theme.yaml, templates/, assets/).
 Writes: the output dir only (default _site/) — index.html per route,
-        search-index.json, bundle.json, .nojekyll. Nothing is written
-        into any KB's content files.
+        fragments, search-index.json, bundle.json, assets/, .nojekyll.
+        Nothing is written into any KB's content files.
 
 Sources may be public or private, on any host: github:<owner>/<repo>,
 gitlab:<group>/<repo>, a full https/ssh git URL, or a local path.
@@ -25,72 +35,25 @@ most private member. Publish private compositions only to
 access-controlled hosting — GitHub Pages URLs are public even for
 private repos outside Enterprise.
 
-Requires: pyyaml, markdown.  Usage: build_site.py [--out _site]
+Requires: pyyaml, markdown, jinja2.
+Usage: build_site.py [--out _site] [--theme default|<name>|<path>]
 """
 
 import argparse
-import html
 import json
 import posixpath
 import re
+import shutil
 import subprocess
 import sys
 from pathlib import Path
 
+import jinja2
 import markdown
 import yaml
 
 ROOT = Path(__file__).resolve().parent.parent
 CACHE = ROOT / ".openshelf" / "cache"
-
-CSS = """
-:root { --ink:#1a1d21; --muted:#5c6470; --line:#e2e6ea; --accent:#0b5cad;
-        --chip:#eef2f5; --amber:#8a6100; --amberbg:#fdf3d7; }
-* { box-sizing:border-box; }
-body { margin:0; color:var(--ink); font:16px/1.6 system-ui,-apple-system,
-       "Segoe UI",Roboto,sans-serif; background:#fff; }
-header.site { border-bottom:1px solid var(--line); }
-header.site .wrap { display:flex; gap:1rem; align-items:baseline;
-  flex-wrap:wrap; padding:.7rem 1rem; }
-header.site a { color:var(--ink); text-decoration:none; font-weight:600; }
-header.site nav a { color:var(--accent); font-weight:400; margin-right:.9rem; }
-main { max-width:880px; margin:0 auto; padding:1.2rem 1rem 3rem; }
-footer { max-width:880px; margin:0 auto; padding:1rem; color:var(--muted);
-  font-size:.85rem; border-top:1px solid var(--line); }
-h1 { font-size:1.7rem; line-height:1.25; margin:.4rem 0 .6rem; }
-a { color:var(--accent); }
-.card { border:1px solid var(--line); border-radius:10px; padding:1rem 1.1rem;
-  margin:0 0 1.2rem; background:#fbfcfd; }
-.card p.summary { margin:.2rem 0 .7rem; font-size:1.05rem; }
-.chips { display:flex; gap:.45rem; flex-wrap:wrap; margin:.4rem 0 .2rem; }
-.chip { background:var(--chip); border-radius:999px; padding:.12rem .6rem;
-  font-size:.8rem; color:var(--muted); }
-.chip.status-active { color:#146c2e; } .chip.status-archived { color:#666; }
-.chip.status-unknown { color:var(--amber); }
-.prov { background:var(--amberbg); color:var(--amber); border-radius:8px;
-  padding:.45rem .8rem; font-size:.87rem; margin:0 0 1rem; }
-.prov code { font-size:.85em; }
-a.resource { display:inline-block; margin-top:.5rem; font-weight:600; }
-.related { border-top:1px solid var(--line); margin-top:2rem; padding-top:.6rem; }
-.searchbox { position:relative; flex:1 1 240px; max-width:430px; }
-#q { width:100%; padding:.45rem .7rem; font-size:.95rem; border:1px solid
-  var(--line); border-radius:8px; }
-#results { position:absolute; top:calc(100% + 4px); left:0; right:0;
-  background:#fff; border:1px solid var(--line); border-radius:8px;
-  list-style:none; padding:0; margin:0; z-index:20; max-height:62vh;
-  overflow:auto; box-shadow:0 8px 30px rgba(20,25,30,.13); }
-#results:empty { display:none; }
-#results li { padding:.5rem .7rem; border-bottom:1px solid var(--line); }
-#results li:last-child { border-bottom:none; }
-#results .meta { color:var(--muted); font-size:.8rem; }
-#results .snip { color:var(--muted); font-size:.85rem; }
-.kbblock { border:1px solid var(--line); border-radius:10px;
-  padding:1rem 1.1rem; margin:0 0 1rem; }
-.kbblock h3 { margin:.1rem 0 .3rem; }
-.kbblock p { margin:.2rem 0; color:var(--muted); }
-code { background:var(--chip); padding:.05rem .3rem; border-radius:4px; }
-pre code { display:block; padding:.8rem; overflow-x:auto; }
-"""
 
 
 def plain_text(md_text):
@@ -179,6 +142,12 @@ def route_for(kb, page, host_id):
     return f"{prefix}{page['stem']}/"
 
 
+def fragment_rel(route):
+    """Output-relative path of a route's theme-free content fragment."""
+    stem = route.rstrip("/") or "index"
+    return f"fragments/{stem}.html"
+
+
 def rel_href(from_route, to_route):
     start = from_route.strip("/") or "."
     target = to_route.strip("/") or "."
@@ -186,12 +155,31 @@ def rel_href(from_route, to_route):
     return "./" if rel == "." else rel + "/"
 
 
+def load_theme(name_or_path):
+    cand = Path(name_or_path)
+    theme_dir = cand if cand.is_dir() else ROOT / "themes" / name_or_path
+    if not (theme_dir / "theme.yaml").exists():
+        sys.exit(f"theme not found: {theme_dir} "
+                 f"(no theme.yaml) — see themes/README.md")
+    meta = yaml.safe_load((theme_dir / "theme.yaml").read_text()) or {}
+    templates = theme_dir / (meta.get("templates") or "templates")
+    env = jinja2.Environment(
+        loader=jinja2.FileSystemLoader(str(templates)), autoescape=True,
+        trim_blocks=True, lstrip_blocks=True)
+    return {"dir": theme_dir, "meta": meta,
+            "assets": theme_dir / (meta.get("assets") or "assets"),
+            "template": env.get_template("page.html")}
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--out", default="_site")
+    ap.add_argument("--theme", default="default",
+                    help="theme name under themes/, or a theme dir path")
     args = ap.parse_args()
     out = (ROOT / args.out).resolve()
     out.mkdir(parents=True, exist_ok=True)
+    theme = load_theme(args.theme)
 
     host_manifest = yaml.safe_load((ROOT / "kb.yaml").read_text())
     host_id = host_manifest["id"]
@@ -282,46 +270,43 @@ def main():
         md.reset()
         return rewrite(page, md.convert(page["body"]))
 
-    def shell(page, title, inner):
+    foot_bits = [f'{host_id}@{((host_commit or "")[:7])}']
+    for other in kbs[1:]:
+        foot_bits.append(f'{other["id"]}@{(other["commit"] or "")[:7]}')
+    footer = " · ".join(foot_bits)
+
+    def write_fragment(page):
+        rel = fragment_rel(page["route"])
+        dest = out / rel
+        dest.parent.mkdir(parents=True, exist_ok=True)
+        content = render_body(page)
+        dest.write_text(content)
+        return rel, content
+
+    def render_page(page, title, content, card=None, composed=(),
+                    related=()):
         kb = by_id[page["kb"]]
         root_rel = rel_href(page["route"], "")
-        nav = [("Home", rel_href(page["route"], ""))]
+        nav = [{"label": "Home", "href": root_rel}]
         for other in kbs[1:]:
-            nav.append((other["title"],
-                        rel_href(page["route"], f"kb/{other['id']}/")))
-        nav_html = "".join(
-            f'<a href="{href}">{html.escape(label)}</a>'
-            for label, href in nav)
-        prov = ""
+            nav.append({"label": other["title"],
+                        "href": rel_href(page["route"],
+                                          f"kb/{other['id']}/")})
+        provenance = None
         if kb["id"] != host_id:
-            prov = (f'<div class="prov">From <strong>{html.escape(kb["id"])}'
-                    f'</strong> @ <code>{(kb["commit"] or "")[:7]}</code>'
-                    f' — composed at the commit pinned in '
-                    f'<code>.openshelf/kbs.lock</code></div>')
-        foot_bits = [f'{host_id}@{((host_commit or "")[:7])}']
-        for other in kbs[1:]:
-            foot_bits.append(f'{other["id"]}@{(other["commit"] or "")[:7]}')
-        return f"""<!DOCTYPE html>
-<html lang="en"><head><meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>{html.escape(title)}</title><style>{CSS}</style></head>
-<body><header class="site"><div class="wrap">
-<a href="{rel_href(page['route'], '')}">{html.escape(by_id[host_id]['title'])}</a>
-<nav>{nav_html}</nav>
-<div class="searchbox"><input id="q" type="search"
-placeholder="Search all composed KBs…" autocomplete="off">
-<ul id="results"></ul></div></div></header>
-<main>{prov}{inner}</main>
-<footer>Built from OpenShelf knowledge bases · {' · '.join(foot_bits)} ·
-markdown is the source of truth; this site is a rendered view.</footer>
-<script>window.SEARCH_BASE="{root_rel}";</script>
-<script src="{root_rel}search.js"></script>
-</body></html>"""
-
-    def write_page(page, title, inner):
+            provenance = {"kb_id": kb["id"], "commit": kb["commit"],
+                          "commit_short": (kb["commit"] or "")[:7]}
+        ctx = {"title": title,
+               "page_title": title if page["kind"] in ("entity", "concept")
+               else None,
+               "site_title": by_id[host_id]["title"],
+               "home_href": root_rel, "nav": nav, "root_rel": root_rel,
+               "provenance": provenance, "card": card, "content": content,
+               "composed": list(composed), "related": list(related),
+               "footer": footer}
         dest = out / page["route"] / "index.html"
         dest.parent.mkdir(parents=True, exist_ok=True)
-        dest.write_text(shell(page, title, inner))
+        dest.write_text(theme["template"].render(**ctx))
 
     search_index = []
     bundle = {"host": {"id": host_id, "title": by_id[host_id]["title"],
@@ -335,78 +320,62 @@ markdown is the source of truth; this site is a rendered view.</footer>
                      "source": kb["source"], "commit": kb["commit"],
                      "visibility": kb["visibility"],
                      "pages": []}
-        # KB home
+        # KB home: fragment is the body; the host home also gets the
+        # composed-KB blocks, which the theme renders from context.
         home = kb["home"]
-        inner = render_body(home)
+        home_frag, home_content = write_fragment(home)
         search_index.append({
             "t": kb["title"], "s": kb["description"], "c": "",
             "kb": kb["id"], "p": home["route"],
             "x": plain_text(home["body"])})
+        composed = []
         if kb["id"] == host_id:
-            blocks = []
             for other in kbs[1:]:
-                count = sum(1 for p in other["pages"]
-                            if p["kind"] == "entity")
-                blocks.append(
-                    f'<div class="kbblock"><h3><a href="'
-                    f'{rel_href("", "kb/" + other["id"] + "/")}">'
-                    f'{html.escape(other["title"])}</a></h3>'
-                    f'<p>{html.escape(other["description"])}</p>'
-                    f'<p>{count} pages · composed @ '
-                    f'{(other["commit"] or "")[:7]}</p></div>')
-            if blocks:
-                inner += "<h2>Composed knowledge bases</h2>" + "".join(blocks)
-            write_page(home, kb["title"], inner)
-        else:
-            write_page(home, kb["title"], inner)
+                composed.append({
+                    "title": other["title"],
+                    "description": other["description"],
+                    "pages": sum(1 for p in other["pages"]
+                                 if p["kind"] == "entity"),
+                    "commit_short": (other["commit"] or "")[:7],
+                    "href": rel_href(home["route"], f"kb/{other['id']}/")})
+        render_page(home, kb["title"], home_content, composed=composed)
         kb_bundle["pages"].append({"slug": "", "path": home["route"],
-                                   "kind": "home", "title": kb["title"]})
+                                   "kind": "home", "title": kb["title"],
+                                   "fragment": home_frag})
         for page in kb["pages"]:
             meta = page["meta"]
             title = str(meta.get("title") or page["stem"])
+            frag, content = write_fragment(page)
             if page["kind"] in ("entity", "concept"):
                 chips = []
                 for label, key in (("category", "category"),
                                    ("status", "status")):
                     if meta.get(key):
-                        cls = f' class="chip status-{meta[key]}"' \
-                            if key == "status" else ' class="chip"'
-                        chips.append(f'<span{cls}>{label}: '
-                                     f'{html.escape(str(meta[key]))}</span>')
+                        cls = f"chip status-{meta[key]}" \
+                            if key == "status" else "chip"
+                        chips.append({"text": f"{label}: {meta[key]}",
+                                      "cls": cls})
                 for key in ("last_checked", "updated", "depth"):
                     if meta.get(key):
-                        chips.append(f'<span class="chip">{key}: '
-                                     f'{html.escape(str(meta[key]))}</span>')
-                card = (f'<div class="card"><p class="summary">'
-                        f'{html.escape(str(meta.get("summary") or ""))}</p>'
-                        f'<div class="chips">{"".join(chips)}</div>')
-                if meta.get("url"):
-                    card += (f'<a class="resource" href="'
-                             f'{html.escape(str(meta["url"]))}">'
-                             f'Open the resource ↗</a>')
-                card += "</div>"
-                body_html = render_body(page)
-                related = meta.get("related") or []
-                rel_links = []
-                for slug in related:
+                        chips.append({"text": f"{key}: {meta[key]}",
+                                      "cls": "chip"})
+                card = {"summary": str(meta.get("summary") or ""),
+                        "chips": chips,
+                        "resource_url": str(meta["url"])
+                        if meta.get("url") else None}
+                related = []
+                for slug in [str(r) for r in (meta.get("related") or [])]:
                     target = None
                     for cand in (slug, f"concepts/{slug}"):
                         target = slug_routes.get((kb["id"], cand))
                         if target:
                             break
-                    if target:
-                        rel_links.append(
-                            f'<li><a href="{rel_href(page["route"], target)}">'
-                            f'{html.escape(slug)}</a></li>')
-                    else:
-                        rel_links.append(f'<li>{html.escape(slug)}</li>')
-                rel_html = ""
-                if rel_links:
-                    rel_html = ('<div class="related"><h2>Related</h2><ul>'
-                                + "".join(rel_links) + "</ul></div>")
-                write_page(page, title,
-                           f"<h1>{html.escape(title)}</h1>" + card
-                           + body_html + rel_html)
+                    related.append({
+                        "slug": slug,
+                        "href": rel_href(page["route"], target)
+                        if target else None})
+                render_page(page, title, content, card=card,
+                            related=related)
                 search_index.append({
                     "t": title, "s": str(meta.get("summary") or ""),
                     "c": str(meta.get("category") or ""), "kb": kb["id"],
@@ -421,17 +390,24 @@ markdown is the source of truth; this site is a rendered view.</footer>
                     "status": str(meta.get("status") or ""),
                     "updated": str(meta.get("updated")
                                    or meta.get("last_checked") or ""),
+                    "last_checked": str(meta.get("last_checked") or ""),
+                    "depth": str(meta.get("depth") or ""),
                     "url": str(meta.get("url") or ""),
-                    "related": [str(r) for r in related],
-                    "kb_links": kb_links})
+                    "related": [str(r)
+                                for r in (meta.get("related") or [])],
+                    "kb_links": kb_links, "fragment": frag})
             else:
-                write_page(page, title, render_body(page))
+                render_page(page, title, content)
                 kb_bundle["pages"].append({"slug": page["stem"],
                                            "path": page["route"],
                                            "kind": page["kind"],
-                                           "title": title})
+                                           "title": title,
+                                           "fragment": frag})
         bundle["kbs"].append(kb_bundle)
 
+    if theme["assets"].is_dir():
+        shutil.copytree(theme["assets"], out / "assets",
+                        dirs_exist_ok=True)
     (out / "search-index.json").write_text(json.dumps(search_index))
     (out / "search.js").write_text(
         "let IDX=[];const B=window.SEARCH_BASE||'';"
@@ -479,9 +455,10 @@ markdown is the source of truth; this site is a rendered view.</footer>
               file=sys.stderr)
     (out / "bundle.json").write_text(json.dumps(bundle, indent=1))
     (out / ".nojekyll").write_text("")
-    n = sum(1 for _ in out.rglob("index.html"))
-    print(f"built {n} pages, {len(search_index)} searchable, "
-          f"{len(kbs)} KBs -> {out}")
+    pages = sum(1 for kb in bundle["kbs"] for _ in kb["pages"])
+    print(f"built {pages} pages, {len(search_index)} searchable, "
+          f"{len(kbs)} KBs, theme {theme['meta'].get('name', '?')} "
+          f"-> {out}")
     return 0
 
 

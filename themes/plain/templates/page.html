@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<title>{{ title }} · {{ site_title }}</title>
+<link rel="stylesheet" href="{{ root_rel }}assets/style.css">
+</head>
+<body>
+<header>
+<p><a href="{{ home_href }}">{{ site_title }}</a>
+{% for item in nav %} · <a href="{{ item.href }}">{{ item.label }}</a>{% endfor %}</p>
+<div class="searchbox"><input id="q" type="search" placeholder="Search…" autocomplete="off">
+<ul id="results"></ul></div>
+</header>
+<main>
+{% if provenance %}<p><small>From {{ provenance.kb_id }} @ {{ provenance.commit_short }}</small></p>
+{% endif %}
+{% if page_title %}<h1>{{ page_title }}</h1>
+{% endif %}
+{% if card %}<p>{{ card.summary }}</p>
+<p>{% for chip in card.chips %}<small>{{ chip.text }}</small>{% if not loop.last %} · {% endif %}{% endfor %}</p>
+{% if card.resource_url %}<p><a href="{{ card.resource_url }}">Open the resource</a></p>
+{% endif %}
+{% endif %}
+{{ content | safe }}
+{% if composed %}<h2>Composed knowledge bases</h2>
+{% for kb in composed %}<p><a href="{{ kb.href }}">{{ kb.title }}</a> — {{ kb.description }} ({{ kb.pages }} pages @ {{ kb.commit_short }})</p>
+{% endfor %}
+{% endif %}
+{% if related %}<h2>Related</h2><ul>{% for r in related %}<li>{% if r.href %}<a href="{{ r.href }}">{{ r.slug }}</a>{% else %}{{ r.slug }}{% endif %}</li>{% endfor %}</ul>
+{% endif %}
+</main>
+<footer><small>{{ footer }}</small></footer>
+<script>window.SEARCH_BASE="{{ root_rel }}";</script>
+<script src="{{ root_rel }}search.js"></script>
+</body></html>

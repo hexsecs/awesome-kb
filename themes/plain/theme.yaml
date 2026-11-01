@@ -1,0 +1,9 @@
+name: plain
+version: "1.0"
+author: Awesome KB project
+description: >
+  Minimal example theme: near-unstyled, semantic HTML. Exists to prove
+  the theme contract and to be copied as the starting point for a
+  custom theme — same context, same hooks, almost no opinions.
+templates: templates
+assets: assets
