@@ -1,0 +1,20 @@
+openshelf: "0.1"
+id: awesome-kb
+title: Awesome KB
+description: >
+  Registry of living, LLM-readable knowledge bases grown from awesome lists:
+  one page per registered KB, plus a machine-readable connection list agents
+  can sync and read progressively.
+profile: awesome
+version: "2026.10.31"
+license: CC-BY-4.0
+maintainers: [hexsecs]
+tags: [registry, knowledge-bases, awesome, llm-wiki]
+layout:
+  pages: wiki
+  index: index.md
+  sources: raw
+  schema: AGENTS.md
+  log: log.md
+depends:
+  - awesome-kb-automotive-security
