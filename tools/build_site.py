@@ -72,11 +72,18 @@ a { color:var(--accent); }
 .prov code { font-size:.85em; }
 a.resource { display:inline-block; margin-top:.5rem; font-weight:600; }
 .related { border-top:1px solid var(--line); margin-top:2rem; padding-top:.6rem; }
-#q { width:100%; padding:.6rem .8rem; font-size:1rem; border:1px solid
-  var(--line); border-radius:8px; margin:.4rem 0 .6rem; }
-#results { list-style:none; padding:0; margin:0 0 1.5rem; }
-#results li { padding:.45rem 0; border-bottom:1px solid var(--line); }
-#results .meta { color:var(--muted); font-size:.83rem; }
+.searchbox { position:relative; flex:1 1 240px; max-width:430px; }
+#q { width:100%; padding:.45rem .7rem; font-size:.95rem; border:1px solid
+  var(--line); border-radius:8px; }
+#results { position:absolute; top:calc(100% + 4px); left:0; right:0;
+  background:#fff; border:1px solid var(--line); border-radius:8px;
+  list-style:none; padding:0; margin:0; z-index:20; max-height:62vh;
+  overflow:auto; box-shadow:0 8px 30px rgba(20,25,30,.13); }
+#results:empty { display:none; }
+#results li { padding:.5rem .7rem; border-bottom:1px solid var(--line); }
+#results li:last-child { border-bottom:none; }
+#results .meta { color:var(--muted); font-size:.8rem; }
+#results .snip { color:var(--muted); font-size:.85rem; }
 .kbblock { border:1px solid var(--line); border-radius:10px;
   padding:1rem 1.1rem; margin:0 0 1rem; }
 .kbblock h3 { margin:.1rem 0 .3rem; }
@@ -84,6 +91,16 @@ a.resource { display:inline-block; margin-top:.5rem; font-weight:600; }
 code { background:var(--chip); padding:.05rem .3rem; border-radius:4px; }
 pre code { display:block; padding:.8rem; overflow-x:auto; }
 """
+
+
+def plain_text(md_text):
+    """Rough plain-text extraction of a markdown body, for the search
+    index. Search covers full page text, not just frontmatter."""
+    t = re.sub(r"```.*?```", " ", md_text, flags=re.S)
+    t = re.sub(r"!\[([^\]]*)\]\([^)]*\)", r"\1", t)
+    t = re.sub(r"\[([^\]]*)\]\([^)]*\)", r"\1", t)
+    t = re.sub(r"[#>*_`~]+", " ", t)
+    return re.sub(r"\s+", " ", t).strip()[:6000]
 
 
 def parse_frontmatter(text):
@@ -265,8 +282,9 @@ def main():
         md.reset()
         return rewrite(page, md.convert(page["body"]))
 
-    def shell(page, title, inner, search=False):
+    def shell(page, title, inner):
         kb = by_id[page["kb"]]
+        root_rel = rel_href(page["route"], "")
         nav = [("Home", rel_href(page["route"], ""))]
         for other in kbs[1:]:
             nav.append((other["title"],
@@ -283,28 +301,27 @@ def main():
         foot_bits = [f'{host_id}@{((host_commit or "")[:7])}']
         for other in kbs[1:]:
             foot_bits.append(f'{other["id"]}@{(other["commit"] or "")[:7]}')
-        search_html = ""
-        if search:
-            search_html = ('<input id="q" type="search" placeholder='
-                           '"Search all composed KBs…" autocomplete="off">'
-                           '<ul id="results"></ul><script src="search.js">'
-                           '</script>')
         return f"""<!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{html.escape(title)}</title><style>{CSS}</style></head>
 <body><header class="site"><div class="wrap">
 <a href="{rel_href(page['route'], '')}">{html.escape(by_id[host_id]['title'])}</a>
-<nav>{nav_html}</nav></div></header>
-<main>{prov}{search_html}{inner}</main>
+<nav>{nav_html}</nav>
+<div class="searchbox"><input id="q" type="search"
+placeholder="Search all composed KBs…" autocomplete="off">
+<ul id="results"></ul></div></div></header>
+<main>{prov}{inner}</main>
 <footer>Built from OpenShelf knowledge bases · {' · '.join(foot_bits)} ·
 markdown is the source of truth; this site is a rendered view.</footer>
+<script>window.SEARCH_BASE="{root_rel}";</script>
+<script src="{root_rel}search.js"></script>
 </body></html>"""
 
-    def write_page(page, title, inner, search=False):
+    def write_page(page, title, inner):
         dest = out / page["route"] / "index.html"
         dest.parent.mkdir(parents=True, exist_ok=True)
-        dest.write_text(shell(page, title, inner, search=search))
+        dest.write_text(shell(page, title, inner))
 
     search_index = []
     bundle = {"host": {"id": host_id, "title": by_id[host_id]["title"],
@@ -321,6 +338,10 @@ markdown is the source of truth; this site is a rendered view.</footer>
         # KB home
         home = kb["home"]
         inner = render_body(home)
+        search_index.append({
+            "t": kb["title"], "s": kb["description"], "c": "",
+            "kb": kb["id"], "p": home["route"],
+            "x": plain_text(home["body"])})
         if kb["id"] == host_id:
             blocks = []
             for other in kbs[1:]:
@@ -335,7 +356,7 @@ markdown is the source of truth; this site is a rendered view.</footer>
                     f'{(other["commit"] or "")[:7]}</p></div>')
             if blocks:
                 inner += "<h2>Composed knowledge bases</h2>" + "".join(blocks)
-            write_page(home, kb["title"], inner, search=True)
+            write_page(home, kb["title"], inner)
         else:
             write_page(home, kb["title"], inner)
         kb_bundle["pages"].append({"slug": "", "path": home["route"],
@@ -389,7 +410,7 @@ markdown is the source of truth; this site is a rendered view.</footer>
                 search_index.append({
                     "t": title, "s": str(meta.get("summary") or ""),
                     "c": str(meta.get("category") or ""), "kb": kb["id"],
-                    "p": page["route"]})
+                    "p": page["route"], "x": plain_text(page["body"])})
                 kb_links = sorted({m.group(1) for m in re.finditer(
                     r"\]\((kb://[^)]+)\)", page["body"])})
                 kb_bundle["pages"].append({
@@ -413,17 +434,41 @@ markdown is the source of truth; this site is a rendered view.</footer>
 
     (out / "search-index.json").write_text(json.dumps(search_index))
     (out / "search.js").write_text(
-        "let IDX=[];fetch('search-index.json').then(r=>r.json())"
-        ".then(d=>IDX=d);const q=document.getElementById('q'),"
+        "let IDX=[];const B=window.SEARCH_BASE||'';"
+        "fetch(B+'search-index.json').then(r=>r.json())"
+        ".then(d=>IDX=d).catch(()=>{});"
+        "const q=document.getElementById('q'),"
         "res=document.getElementById('results');"
-        "q.addEventListener('input',()=>{const v=q.value.toLowerCase()"
-        ".trim();res.innerHTML='';if(v.length<2)return;"
-        "IDX.filter(e=>(e.t+' '+e.s+' '+e.c).toLowerCase().includes(v))"
-        ".slice(0,30).forEach(e=>{const li=document.createElement('li');"
-        "li.innerHTML='<a></a> <span class=\"meta\"></span>';"
-        "const a=li.querySelector('a');a.href=e.p;a.textContent=e.t;"
-        "li.querySelector('.meta').textContent='— '+e.s+' · '+e.kb"
-        "+(e.c?' · '+e.c:'');res.appendChild(li);});});")
+        "q.addEventListener('input',()=>{"
+        "const words=q.value.toLowerCase().trim().split(/\\s+/)"
+        ".filter(Boolean);res.innerHTML='';"
+        "if(!words.length||words.join('').length<2)return;"
+        "const scored=[];"
+        "for(const e of IDX){const T=e.t.toLowerCase(),"
+        "S=(e.s||'').toLowerCase(),C=(e.c||'').toLowerCase(),"
+        "X=(e.x||'').toLowerCase();let sc=0,ok=true;"
+        "for(const w of words){let s=0;"
+        "if(T.includes(w))s=5;else if(S.includes(w))s=3;"
+        "else if(C.includes(w))s=2;else if(X.includes(w))s=1;"
+        "else{ok=false;break;}sc+=s;}"
+        "if(ok)scored.push([sc,e]);}"
+        "scored.sort((a,b)=>b[0]-a[0]);"
+        "for(const pair of scored.slice(0,20)){const e=pair[1];"
+        "const li=document.createElement('li');"
+        "let snip=e.s||'';"
+        "if(pair[0]<=words.length&&e.x){"
+        "const i=e.x.toLowerCase().indexOf(words[0]);"
+        "if(i>=0)snip='…'+e.x.slice(Math.max(0,i-60),i+120)+'…';}"
+        "li.innerHTML='<a></a><div class=\"meta\"></div>"
+        "<div class=\"snip\"></div>';"
+        "const a=li.querySelector('a');a.href=B+e.p;"
+        "a.textContent=e.t;"
+        "li.querySelector('.meta').textContent=e.kb"
+        "+(e.c?' · '+e.c:'');"
+        "li.querySelector('.snip').textContent=snip;"
+        "res.appendChild(li);}});"
+        "document.addEventListener('click',ev=>{"
+        "if(!ev.target.closest('.searchbox'))res.innerHTML='';});")
     # A composition is only as private as its most private member.
     bundle["contains_private"] = any(kb["visibility"] == "private"
                                      for kb in kbs)
