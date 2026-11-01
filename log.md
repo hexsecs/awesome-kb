@@ -14,3 +14,15 @@ Registered `awesome-kb-automotive-security` as the first conforming KB.
 Verified its manifest and `openshelf lint` result at commit
 `5e411ecabd8880916ce6949552e2a1da0cdc4ff8`; created `wiki/automotive-security.md`
 and added it to the registry index and README.
+
+## [2026-11-01] update | Automotive Security standalone site live
+
+The automotive KB now renders its own GitHub Pages site in addition
+to being imported into the composed site: the KB repo gained a
+standalone render workflow (its PR #32, merged 2026-11-01) that
+builds the KB from its own main with the registry builder and theme
+(registry pinned by exact commit) and deploys to
+https://hexsecs.github.io/awesome-kb-automotive-security/.
+Verified live 2026-11-01: home page and entity/concept routes serve
+HTTP 200 at the site root. The registry page records the URL; the
+composed build is unchanged.

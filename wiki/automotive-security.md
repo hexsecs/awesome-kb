@@ -6,7 +6,7 @@ category: Security
 url: https://github.com/hexsecs/awesome-kb-automotive-security
 status: active
 last_checked: 2026-10-31
-updated: 2026-10-31
+updated: 2026-11-01
 license: CC0-1.0
 kb_id: awesome-kb-automotive-security
 openshelf_version: "0.1"
@@ -36,6 +36,7 @@ ingest flows from the list into the KB, never the other way around.
 - **Conformance:** verified with `openshelf lint` — no errors or warnings
 - **Verified commit:** `5e411ecabd8880916ce6949552e2a1da0cdc4ff8`
 - **Pilot review:** 2026-11-28
+- **Standalone site:** [hexsecs.github.io/awesome-kb-automotive-security](https://hexsecs.github.io/awesome-kb-automotive-security/) — the KB's own GitHub Pages render, built from its own main on every push; the composed site imports the KB separately, at the registry lock pin.
 
 At registration, the KB contained generated pages for 228 list entries
 across 17 source-list sections. Registration records OpenShelf conformance;
@@ -44,6 +45,7 @@ to remain live.
 
 ## Enter the KB
 
+- [Browse its standalone rendered site](https://hexsecs.github.io/awesome-kb-automotive-security/)
 - [Read its L1 index](https://github.com/hexsecs/awesome-kb-automotive-security/blob/main/index.md)
 - [Read its manifest](https://github.com/hexsecs/awesome-kb-automotive-security/blob/main/kb.yaml)
 - [Open its CANarchy page](kb://awesome-kb-automotive-security/canarchy) through an OpenShelf-aware client
