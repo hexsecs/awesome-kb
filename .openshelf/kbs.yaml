@@ -1,0 +1,6 @@
+openshelf: '0.1'
+kbs:
+- id: awesome-kb-automotive-security
+  source: github:hexsecs/awesome-kb-automotive-security
+  use: when a task involves automotive security, vehicle networks, diagnostics, ECU
+    firmware, RF/key fobs, or EV charging security
