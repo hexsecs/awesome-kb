@@ -5,11 +5,11 @@ type: entity
 category: Security
 url: https://github.com/hexsecs/awesome-kb-automotive-security
 status: active
-last_checked: 2026-10-31
-updated: 2026-11-01
+last_checked: 2026-11-02
+updated: 2026-11-02
 license: CC0-1.0
 kb_id: awesome-kb-automotive-security
-openshelf_version: "0.1"
+openshelf_version: "1.4"
 kb_profile: awesome
 conformance: verified
 sources:
@@ -29,13 +29,13 @@ ingest flows from the list into the KB, never the other way around.
 
 - **Repository:** [hexsecs/awesome-kb-automotive-security](https://github.com/hexsecs/awesome-kb-automotive-security)
 - **OpenShelf ID:** `awesome-kb-automotive-security`
-- **OpenShelf version:** `0.1`
+- **OpenShelf version:** `1.4`
 - **Profile:** `awesome`
 - **KB version:** `2026.10.31`
 - **Content license:** CC0-1.0
 - **Conformance:** verified with `openshelf lint` — no errors or warnings
-- **Verified commit:** `5e411ecabd8880916ce6949552e2a1da0cdc4ff8`
-- **Pilot review:** 2026-11-28
+- **Verified commit:** `57a4533c5f66d835598826013b2bd76e7d3a60cc`
+- **Pilot review:** graduated early — the owner ended the pilot 2026-11-01; this KB continues as a standing project
 - **Standalone site:** [hexsecs.github.io/awesome-kb-automotive-security](https://hexsecs.github.io/awesome-kb-automotive-security/) — the KB's own GitHub Pages render, built from its own main on every push; the composed site imports the KB separately, at the registry lock pin.
 
 At registration, the KB contained generated pages for 228 list entries

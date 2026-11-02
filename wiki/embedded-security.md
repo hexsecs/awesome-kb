@@ -5,11 +5,11 @@ type: entity
 category: Security
 url: https://github.com/hexsecs/awesome-kb-embedded-security
 status: active
-last_checked: 2026-11-01
-updated: 2026-11-01
+last_checked: 2026-11-02
+updated: 2026-11-02
 license: CC0-1.0
 kb_id: awesome-kb-embedded-security
-openshelf_version: "0.1"
+openshelf_version: "1.4"
 kb_profile: awesome
 conformance: verified
 sources:
@@ -33,12 +33,12 @@ agent maintenance) and was designated canon by the owner on 2026-11-01.
 
 - **Repository:** [hexsecs/awesome-kb-embedded-security](https://github.com/hexsecs/awesome-kb-embedded-security)
 - **OpenShelf ID:** `awesome-kb-embedded-security`
-- **OpenShelf version:** `0.1`
+- **OpenShelf version:** `1.4`
 - **Profile:** `awesome`
 - **KB version:** `2026.11.01`
 - **Content license:** CC0-1.0
 - **Conformance:** verified with `openshelf lint` — no errors or warnings
-- **Verified commit:** `c1c94da1f2ef38ab00d49d0d0bb63f117c53626f`
+- **Verified commit:** `d447c9ac01db022b7419f5624be9e64510cb2d6c`
 - **Standalone site:** [hexsecs.github.io/awesome-kb-embedded-security](https://hexsecs.github.io/awesome-kb-embedded-security/) — the KB's own GitHub Pages render, built from its own main on every push; the composed site imports the KB separately, at the registry lock pin.
 
 At registration, the KB contains generated stub pages for all 250

@@ -1,14 +1,14 @@
-openshelf: '0.1'
+openshelf: '1.4'
 kbs:
   awesome-kb-automotive-security:
     source: github:hexsecs/awesome-kb-automotive-security
-    commit: 4b3c71971ba553177d4ff8832c3674b9a7ce84cc
+    commit: 57a4533c5f66d835598826013b2bd76e7d3a60cc
   awesome-kb-security:
     source: github:hexsecs/awesome-kb-security
-    commit: fe7a99f2b5a97d09c5a140e7db8fa008022bd0ea
+    commit: 537a36a0e6fa4fda01c46debd427ccad1bc94571
   awesome-kb-ai-llm-agents:
     source: github:hexsecs/awesome-kb-ai-llm-agents
-    commit: fc6328073474fb72b30cd46bf6f95a2d6e541b0a
+    commit: bbdce9e15e03f635f78734f8abe2926a80760330
   awesome-kb-embedded-security:
     source: github:hexsecs/awesome-kb-embedded-security
-    commit: beff02672f70f9550a1d9f3ff436e86d683b1378
+    commit: d447c9ac01db022b7419f5624be9e64510cb2d6c

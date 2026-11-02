@@ -5,11 +5,11 @@ type: entity
 category: Artificial Intelligence
 url: https://github.com/hexsecs/awesome-kb-ai-llm-agents
 status: active
-last_checked: 2026-11-01
-updated: 2026-11-01
+last_checked: 2026-11-02
+updated: 2026-11-02
 license: CC0-1.0
 kb_id: awesome-kb-ai-llm-agents
-openshelf_version: "0.1"
+openshelf_version: "1.4"
 kb_profile: awesome
 conformance: verified
 sources:
@@ -27,12 +27,12 @@ ingest flows from the list into the KB, never the other way around.
 
 - **Repository:** [hexsecs/awesome-kb-ai-llm-agents](https://github.com/hexsecs/awesome-kb-ai-llm-agents)
 - **OpenShelf ID:** `awesome-kb-ai-llm-agents`
-- **OpenShelf version:** `0.1`
+- **OpenShelf version:** `1.4`
 - **Profile:** `awesome`
 - **KB version:** `2026.11.01`
 - **Content license:** CC0-1.0
 - **Conformance:** verified with `openshelf lint` — no errors or warnings
-- **Verified commit:** `fc63280`
+- **Verified commit:** `bbdce9e`
 - **Standalone site:** [hexsecs.github.io/awesome-kb-ai-llm-agents](https://hexsecs.github.io/awesome-kb-ai-llm-agents/) — the KB's own GitHub Pages render, built from its own main on every push; the composed site imports the KB separately, at the registry lock pin.
 
 At registration, the KB is a scaffold: it holds no entity pages,
