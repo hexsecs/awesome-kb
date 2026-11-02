@@ -6,7 +6,7 @@ humans together add the depth, links, freshness checks, and machine-readable
 structure that a flat list cannot carry.
 
 This repository is the network's **registry**. It is also an
-[OpenShelf](https://github.com/hexsecs/openkb) knowledge base about the
+[OpenShelf](https://github.com/hexsecs/openshelf) knowledge base about the
 member KBs, with a machine-readable connection list that agents can sync.
 
 **Browse the rendered site: [hexsecs.github.io/awesome-kb](https://hexsecs.github.io/awesome-kb/)** — the composed, searchable reading view of every registered KB.
@@ -49,7 +49,7 @@ a small `kb.yaml` contract, progressive context from a one-line description
 `kb://` links between knowledge bases.
 
 The format, schemas, CLI, lint tool, and MCP server live in
-[hexsecs/openkb](https://github.com/hexsecs/openkb). This registry does not
+[hexsecs/openshelf](https://github.com/hexsecs/openshelf). This registry does not
 define a competing format.
 
 ## Connect the registered KBs
