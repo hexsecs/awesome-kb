@@ -67,3 +67,14 @@ stub pages for all 250 list entries across 35 categories. Standalone
 site live at https://hexsecs.github.io/awesome-kb-embedded-security/.
 Added to .openshelf/kbs.yaml; sync regenerated the lock and context;
 registry page, index, and README catalogue updated.
+
+## [2026-11-02] update | All four registered KBs adopt OpenShelf spec 1.4
+
+Each registered KB minted its KB `uid` and page `uid`s (SPEC §4.1
+adoption path), taught its ingester the uid lifecycle where it has one,
+and restamped kb.yaml to `openshelf: "1.4"` (automotive PR #90, main
+57a4533; embedded PR #1, main d447c9a; security 537a36a; ai-llm-agents
+bbdce9e — each verified `openshelf lint --strict` clean at those
+commits). Registry pages refreshed (version, verified commit, dates)
+and the lock advanced by `openshelf sync`; the hourly pin sweep keeps
+them current from here.
