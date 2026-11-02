@@ -8,7 +8,7 @@ kbs:
     commit: 0c4474277d25b023835ef3c72b7cc41d9b26668b
   awesome-kb-ai-llm-agents:
     source: github:hexsecs/awesome-kb-ai-llm-agents
-    commit: bbdce9e15e03f635f78734f8abe2926a80760330
+    commit: e189aeb49c50ed6bbb4898dbaa3aa0625a02eee1
   awesome-kb-embedded-security:
     source: github:hexsecs/awesome-kb-embedded-security
     commit: d447c9ac01db022b7419f5624be9e64510cb2d6c
