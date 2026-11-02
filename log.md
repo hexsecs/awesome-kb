@@ -53,3 +53,17 @@ pattern as the Security KB; standalone site at
 https://hexsecs.github.io/awesome-kb-ai-llm-agents/. Like Security, it
 holds no entity pages at registration pending the owner's canon-list
 designation.
+
+## [2026-11-01] register | Embedded Security (Awesome KB)
+
+Registered hexsecs/awesome-kb-embedded-security (OpenShelf ID
+`awesome-kb-embedded-security`, profile `awesome`, CC0-1.0) at commit
+c1c94da, verified with `openshelf lint` (no errors or warnings). The KB
+was created the same day at the owner's direction, with the owner's
+long-maintained list hexsecs/awesome-embedded-security designated as
+canon; its ingester is adapted from the automotive KB's for the list's
+two-level category grammar and marker tokens. Initial ingest: generated
+stub pages for all 250 list entries across 35 categories. Standalone
+site live at https://hexsecs.github.io/awesome-kb-embedded-security/.
+Added to .openshelf/kbs.yaml; sync regenerated the lock and context;
+registry page, index, and README catalogue updated.

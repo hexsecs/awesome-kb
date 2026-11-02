@@ -12,3 +12,8 @@ kbs:
   source: github:hexsecs/awesome-kb-ai-llm-agents
   use: when a task involves AI or LLM agents — frameworks, tools, protocols,
     evaluations, or research on autonomous and agentic systems
+- id: awesome-kb-embedded-security
+  source: github:hexsecs/awesome-kb-embedded-security
+  use: when a task involves embedded security — firmware analysis, reverse
+    engineering, hardware hacking, IoT security, fuzzing, secure boot,
+    side-channel analysis, or SDR

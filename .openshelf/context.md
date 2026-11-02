@@ -21,3 +21,9 @@ Knowledge base for AI and LLM agents — frameworks, tools, protocols, evaluatio
 - Use: when a task involves AI or LLM agents — frameworks, tools, protocols, evaluations, or research on autonomous and agentic systems
 - Index: .openshelf/cache/awesome-kb-ai-llm-agents/index.md
 - Pages: .openshelf/cache/awesome-kb-ai-llm-agents/wiki/
+
+## awesome-kb-embedded-security — Embedded Security (Awesome KB)
+Knowledge base for embedded security, ingested from the curated awesome list hexsecs/awesome-embedded-security: firmware analysis, reverse engineering, hardware hacking, IoT security, fuzzing, secure boot, side-channel analysis, and SDR.
+- Use: when a task involves embedded security — firmware analysis, reverse engineering, hardware hacking, IoT security, fuzzing, secure boot, side-channel analysis, or SDR
+- Index: .openshelf/cache/awesome-kb-embedded-security/index.md
+- Pages: .openshelf/cache/awesome-kb-embedded-security/wiki/

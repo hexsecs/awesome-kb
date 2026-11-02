@@ -27,6 +27,11 @@ A KB is listed here only after its `kb.yaml` has been checked and
   research, and practice across offensive and defensive security.
   [Repository](https://github.com/hexsecs/awesome-kb-security) ·
   OpenShelf ID: `awesome-kb-security` · Profile: `awesome`
+- **[Embedded Security](wiki/embedded-security.md)** — Knowledge base for
+  embedded security, ingested from the curated awesome list
+  [hexsecs/awesome-embedded-security](https://github.com/hexsecs/awesome-embedded-security).
+  [Repository](https://github.com/hexsecs/awesome-kb-embedded-security) ·
+  OpenShelf ID: `awesome-kb-embedded-security` · Profile: `awesome`
 
 ### Artificial Intelligence
 

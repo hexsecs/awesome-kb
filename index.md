@@ -7,6 +7,7 @@ Each entry below is a registered, conforming knowledge base.
 
 - [Automotive Security (Awesome KB)](wiki/automotive-security.md) — Knowledge base for automotive security, ingested from the curated awesome list hexsecs/awesome-automotive-security.
 - [Security (Awesome KB)](wiki/security.md) — Knowledge base for security — tools, research, and practice across offensive and defensive security.
+- [Embedded Security (Awesome KB)](wiki/embedded-security.md) — Knowledge base for embedded security, ingested from the curated awesome list hexsecs/awesome-embedded-security.
 
 ## Artificial Intelligence
 
