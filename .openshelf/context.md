@@ -9,3 +9,15 @@ Knowledge base for automotive security, ingested from the curated awesome list h
 - Use: when a task involves automotive security, vehicle networks, diagnostics, ECU firmware, RF/key fobs, or EV charging security
 - Index: .openshelf/cache/awesome-kb-automotive-security/index.md
 - Pages: .openshelf/cache/awesome-kb-automotive-security/wiki/
+
+## awesome-kb-security — Security (Awesome KB)
+Knowledge base for security — tools, research, and practice across offensive and defensive security — to be ingested from a curated awesome list designated as canon by the owner. Scaffolded 2026-11-01; canon list pending the owner's designation.
+- Use: when a task involves security tools, research, or practice across offensive and defensive security (not automotive-specific)
+- Index: .openshelf/cache/awesome-kb-security/index.md
+- Pages: .openshelf/cache/awesome-kb-security/wiki/
+
+## awesome-kb-ai-llm-agents — AI and LLM Agents (Awesome KB)
+Knowledge base for AI and LLM agents — frameworks, tools, protocols, evaluations, and research on autonomous and agentic systems — to be ingested from a curated awesome list designated as canon by the owner. Scaffolded 2026-11-01; canon list pending the owner's designation.
+- Use: when a task involves AI or LLM agents — frameworks, tools, protocols, evaluations, or research on autonomous and agentic systems
+- Index: .openshelf/cache/awesome-kb-ai-llm-agents/index.md
+- Pages: .openshelf/cache/awesome-kb-ai-llm-agents/wiki/

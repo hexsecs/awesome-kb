@@ -23,15 +23,18 @@ A KB is listed here only after its `kb.yaml` has been checked and
   [hexsecs/awesome-automotive-security](https://github.com/hexsecs/awesome-automotive-security).
   [Repository](https://github.com/hexsecs/awesome-kb-automotive-security) ·
   OpenShelf ID: `awesome-kb-automotive-security` · Profile: `awesome`
+- **[Security](wiki/security.md)** — Knowledge base for security: tools,
+  research, and practice across offensive and defensive security.
+  [Repository](https://github.com/hexsecs/awesome-kb-security) ·
+  OpenShelf ID: `awesome-kb-security` · Profile: `awesome`
 
-## Planned knowledge bases
+### Artificial Intelligence
 
-These repositories exist as scaffolds only. They have no conforming
-`kb.yaml` or pages yet, so they are **not registered** and are not included
-in the machine-readable connection list.
-
-- [Security](https://github.com/hexsecs/awesome-kb-security) — broad security KB, scaffold only.
-- [AI / LLM Agents](https://github.com/hexsecs/awesome-kb-ai-llm-agents) — AI and LLM-agent KB, scaffold only.
+- **[AI and LLM Agents](wiki/ai-llm-agents.md)** — Knowledge base for AI
+  and LLM agents: frameworks, tools, protocols, evaluations, and research
+  on autonomous and agentic systems.
+  [Repository](https://github.com/hexsecs/awesome-kb-ai-llm-agents) ·
+  OpenShelf ID: `awesome-kb-ai-llm-agents` · Profile: `awesome`
 
 ## The format
 

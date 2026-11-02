@@ -26,3 +26,30 @@ https://hexsecs.github.io/awesome-kb-automotive-security/.
 Verified live 2026-11-01: home page and entity/concept routes serve
 HTTP 200 at the site root. The registry page records the URL; the
 composed build is unchanged.
+
+## [2026-11-01] register | Security (Awesome KB)
+
+Registered hexsecs/awesome-kb-security (OpenShelf ID
+`awesome-kb-security`, profile `awesome`, CC0-1.0) at commit fe7a99f,
+verified with `openshelf lint` (no errors or warnings) and a passing
+standalone builder run. The repo was scaffolded the same day to the
+network's pattern: conforming kb.yaml, AGENTS.md maintainer schema,
+standalone GitHub Pages render (registry builder pinned by exact
+commit), site live at https://hexsecs.github.io/awesome-kb-security/.
+At registration the KB holds no entity pages: its canon source list has
+not been designated yet — that designation is the owner's decision and
+the KB's next step. Added to .openshelf/kbs.yaml; sync regenerated the
+lock (pinning all three registered KBs) and context; registry page,
+index, and README catalogue updated; the README's Planned section is
+retired, both planned KBs now being registered.
+
+## [2026-11-01] register | AI and LLM Agents (Awesome KB)
+
+Registered hexsecs/awesome-kb-ai-llm-agents (OpenShelf ID
+`awesome-kb-ai-llm-agents`, profile `awesome`, CC0-1.0) at commit
+fc63280, verified with `openshelf lint` (no errors or warnings) and a
+passing standalone builder run. Scaffolded the same day to the same
+pattern as the Security KB; standalone site at
+https://hexsecs.github.io/awesome-kb-ai-llm-agents/. Like Security, it
+holds no entity pages at registration pending the owner's canon-list
+designation.
