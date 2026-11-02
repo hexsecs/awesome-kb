@@ -4,7 +4,7 @@ This repository is the registry for the Awesome KB network. It is itself an
 OpenShelf KB (`profile: awesome`) whose listed entities are knowledge bases.
 
 The format is **not** defined here. OpenShelf is defined in
-[hexsecs/openkb](https://github.com/hexsecs/openkb); this file contains only
+[OpenNorms/openshelf](https://github.com/OpenNorms/openshelf); this file contains only
 the registry's local rules. Read `kb.yaml` for the declared layout.
 
 ## Source of truth
