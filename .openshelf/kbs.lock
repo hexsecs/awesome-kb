@@ -11,4 +11,4 @@ kbs:
     commit: abaae2bfb386a16eed1e578c7c9b4416d419d966
   awesome-kb-embedded-security:
     source: github:hexsecs/awesome-kb-embedded-security
-    commit: 93a38785d311d263e3253079f0c3dad899f42437
+    commit: 9d8234d10e2148b5a0de5abd17cfbec99728a710
