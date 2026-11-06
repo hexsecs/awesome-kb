@@ -78,3 +78,14 @@ bbdce9e — each verified `openshelf lint --strict` clean at those
 commits). Registry pages refreshed (version, verified commit, dates)
 and the lock advanced by `openshelf sync`; the hourly pin sweep keeps
 them current from here.
+
+## [2026-11-06] update | Automotive Security KB pin
+
+Re-verified `awesome-kb-automotive-security` at commit
+`b51e60bacef34cb85a58a4f602d61e906d3ae323` (ingest of list@a25e33d, 237
+entries, including the Petran DEF CON 31 talk and the Savage VehicleSec
+2026 keynote) and moved the registry lock pin to it via `openshelf sync`.
+The sync also moved the embedded-security pin to its current main head
+`f278a15f1311f91bf5454bf35319fcdd4449555c`; both pins verified against
+GitHub main heads. Registry page `last_checked`/`updated` and verified
+commit refreshed.

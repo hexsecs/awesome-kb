@@ -5,8 +5,8 @@ type: entity
 category: Security
 url: https://github.com/hexsecs/awesome-kb-automotive-security
 status: active
-last_checked: 2026-11-02
-updated: 2026-11-02
+last_checked: 2026-11-06
+updated: 2026-11-06
 license: CC0-1.0
 kb_id: awesome-kb-automotive-security
 openshelf_version: "1.4"
@@ -34,7 +34,7 @@ ingest flows from the list into the KB, never the other way around.
 - **KB version:** `2026.10.31`
 - **Content license:** CC0-1.0
 - **Conformance:** verified with `openshelf lint` — no errors or warnings
-- **Verified commit:** `57a4533c5f66d835598826013b2bd76e7d3a60cc`
+- **Verified commit:** `b51e60bacef34cb85a58a4f602d61e906d3ae323` (re-verified 2026-11-06; ingest of list@a25e33d, 237 entries)
 - **Pilot review:** graduated early — the owner ended the pilot 2026-11-01; this KB continues as a standing project
 - **Standalone site:** [hexsecs.github.io/awesome-kb-automotive-security](https://hexsecs.github.io/awesome-kb-automotive-security/) — the KB's own GitHub Pages render, built from its own main on every push; the composed site imports the KB separately, at the registry lock pin.
 
