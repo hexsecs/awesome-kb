@@ -14,5 +14,5 @@ kbs:
     uid: 01a19d3e-896e-7574-9552-2b14463fbf0a
   awesome-kb-embedded-security:
     source: github:hexsecs/awesome-kb-embedded-security
-    commit: 8bb7bcde5560f56518fb701da503a33dae31e7fb
+    commit: fe6b3e2da41be882353da4ffdda262159c747710
     uid: 01a19d3d-d083-75b7-98dc-d8e7a7d34f0e
