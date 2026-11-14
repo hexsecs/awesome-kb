@@ -89,3 +89,14 @@ The sync also moved the embedded-security pin to its current main head
 `f278a15f1311f91bf5454bf35319fcdd4449555c`; both pins verified against
 GitHub main heads. Registry page `last_checked`/`updated` and verified
 commit refreshed.
+
+## [2026-11-14] update | Automotive Security KB pin
+
+Re-verified `awesome-kb-automotive-security` at commit
+`b99182f255c25a8176913204ed0fb12f6aa43ce5` (ingest of list@46f5cc7, 249
+entries, including OCPPuzz and BLE Theft Auto) and moved the registry
+lock pin to it via `openshelf sync`. The sync also moved the
+embedded-security pin to its current main head
+`984931d2dc076fa0c0f55d786624efdaf83fc7fa`; both pins verified against
+GitHub main heads. Registry page `last_checked`/`updated` and verified
+commit refreshed.
