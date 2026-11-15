@@ -100,3 +100,11 @@ embedded-security pin to its current main head
 `984931d2dc076fa0c0f55d786624efdaf83fc7fa`; both pins verified against
 GitHub main heads. Registry page `last_checked`/`updated` and verified
 commit refreshed.
+
+## [2026-11-15] update | Automotive Security KB pin
+
+Re-verified `awesome-kb-automotive-security` at commit
+`b815e6ef2f5484f134b92e2b8e032fd5f5a6f4d6` (ingest of list@87fdec8, 250
+entries, including CAN Playground) and moved the registry lock pin to it
+via `openshelf sync`. The pin was verified against the GitHub main head.
+Registry page `last_checked`/`updated` and verified commit refreshed.
