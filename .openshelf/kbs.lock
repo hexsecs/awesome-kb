@@ -2,7 +2,7 @@ openshelf: '1.7'
 kbs:
   awesome-kb-automotive-security:
     source: github:hexsecs/awesome-kb-automotive-security
-    commit: b815e6ef2f5484f134b92e2b8e032fd5f5a6f4d6
+    commit: e4a7cd036adf016c3b026ab409fdd9f22ecd2ed5
     uid: 01a19d3c-a651-7a1e-8f1d-8ddf81de845f
   awesome-kb-security:
     source: github:hexsecs/awesome-kb-security
